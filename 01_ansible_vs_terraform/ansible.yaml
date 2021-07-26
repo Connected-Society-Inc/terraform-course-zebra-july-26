@@ -1,0 +1,12 @@
+---
+- hosts: localhost
+  tasks: 
+  # - name: provisions a VPC
+  # - name: provisions a subnet
+  
+  - name: provision EC2 instances
+    ec2:
+      count: 2
+      instance_type: t2.micro
+      image: ami-0528a5175983e7f28
+      region: us-west-2
