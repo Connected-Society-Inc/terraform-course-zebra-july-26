@@ -5,7 +5,7 @@ provider "google" {
 resource "google_compute_instance" "instance" {
 
     machine_type = "f1-micro" # required attribute
-    name         = "instance-by-terraform"
+    name         = "${var.env_name}-instance"
     
     boot_disk {
         initialize_params {
