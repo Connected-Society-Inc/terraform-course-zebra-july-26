@@ -1,0 +1,26 @@
+provider "google" {
+    zone = "us-central1-c"
+}
+
+locals {
+    // instance_count = 3
+    instance_names = ["adam", /*"bob",*/ "cecile"]
+}
+
+resource "google_compute_instance" "instance" {
+
+    count = length(local.instance_names)
+
+    machine_type = "f1-micro"
+    name         = local.instance_names[count.index]
+    
+    boot_disk {
+        initialize_params {
+            image = "debian-cloud/debian-10"
+        }
+    }
+
+    network_interface {
+        network = "default"
+    }    
+}
