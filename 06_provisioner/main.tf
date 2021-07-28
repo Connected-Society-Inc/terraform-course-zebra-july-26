@@ -3,7 +3,6 @@ provider "google" {
 }
 
 resource "google_compute_instance" "vm" {
-
     name         = "vm2"
     machine_type = "f1-micro"
 
@@ -21,6 +20,10 @@ resource "google_compute_instance" "vm" {
 
     }
 
+    metadata = {
+        "ssh-keys" = "root:${file("test_key.pub")}"
+    }
+
     // This script will be executed when this resource has been created
     // the script execution is tied to the lifecycle of this resource
     provisioner "local-exec" {
@@ -28,6 +31,23 @@ resource "google_compute_instance" "vm" {
         when = create
         // when = destroy // "clean-up" script after the resource has been destroyed
         command = "echo ${google_compute_instance.vm.network_interface[0].access_config[0].nat_ip}"            
+    }
+
+    provisioner "remote-exec" {
+        connection {
+            type        = "ssh"
+            host        = google_compute_instance.vm.network_interface[0].access_config[0].nat_ip
+            user        = "root"
+            private_key = file("test_key")
+        }
+        inline = ["echo 'Hello from the instance!'", "echo 'This is an another command'"]
+    }
+
+}
+
+resource "null_resource" "dummy_resource" {
+    provisioner "local-exec" {
+        command = "echo 'Hello World!'"    
     }
 }
 
