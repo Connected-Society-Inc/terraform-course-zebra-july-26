@@ -25,3 +25,7 @@ resource "google_sql_user" "admin_user" {
 
 // google_sql_database
 
+output "password" {
+    value = google_sql_user.admin_user.password
+    sensitive = true
+}
